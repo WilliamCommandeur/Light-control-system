@@ -5,35 +5,33 @@ import uuid
 
 load_dotenv()
 
-"""API_URL=os.getenv("GOVEE_API_URL")"""
-API_URL=os.getenv("GOVEE_API_URL")
-API_KEY=os.getenv("GOVEE_API_KEY")
-DEVICE_ID=os.getenv("GOVEE_DEVICE_ID")
-API_URL_CONTROL=os.getenv("GOVEE_API_CONTROL")
-
 class LightingService:
+
     def __init__(self):
+        self.api_url = os.getenv("GOVEE_API_URL")
+        self.api_url_control = os.getenv("GOVEE_API_CONTROL")
         self.headers = {
-            "Govee-API-Key": API_KEY,
+            "Govee-API-Key": os.getenv("GOVEE_API_KEY"),
             "Content-Type": "application/json"
         }
 
     def get_device(self):
-        response = requests.get(API_URL, headers=self.headers)
-
+        print(f"url : {self.api_url}")
+        response = requests.get(self.api_url, headers=self.headers)
+        
         if response.status_code == 200:
-            device = response.json().get("data", [])[0]
+            devices = response.json().get("data", [])
 
-            if not device:
+            if not devices:
                 print("No devices found")
-                return None, None
+                return None
             
-            print(f"Device found : {device}")
-            return device
+            print(f"Devices found : {devices}")
+            return devices[0]
         
         else:
             print(f"Error : {response.status_code} : {response.text}")
-            return None, None
+            return None
     
     def turn_on(self, device_id: str, model: str):
         data = {
@@ -49,7 +47,7 @@ class LightingService:
             }
         }
 
-        response = requests.post(API_URL_CONTROL, json=data, headers=self.headers)
+        response = requests.post(self.api_url_control, json=data, headers=self.headers)
         print(f"Response : {response}")
     
     def turn_off(self, device_id : str, model: str):
@@ -66,7 +64,7 @@ class LightingService:
             }
         }
 
-        response = requests.post(API_URL_CONTROL, json=data, headers=self.headers)
+        response = requests.post(self.api_url_control, json=data, headers=self.headers)
 
 
 if __name__ == "__main__":
