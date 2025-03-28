@@ -1,17 +1,17 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from app.services.lighting import LightingService
+from app.models.request_data import RequestData
 
 router = APIRouter()
 
 
 lighting_service = LightingService()
 
-@router.post("/lighting/on")
-def turn_light_on():
-    response = lighting_service.turn_on()
-    return {"message": "Light turn on", "response": response}
-
-@router.post("/lighting/off")
-def turn_light_off():
-    response = lighting_service.turn_off()
-    return {"message": "Light turn off", "response": response}
+@router.post("/light-control/")
+async def light_control(request_data: RequestData):
+    try:
+        lighting_service.send_request(request_data)
+        state = "ON" if request_data.capability.value == 1 else "OFF"
+        return {"message": f"Light turned {state}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

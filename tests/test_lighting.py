@@ -1,12 +1,13 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from app.services.lighting import LightingService
+from app.models.request_data import RequestData, Capability, CapabilityType
 
 class TestLightingServices(unittest.TestCase):
 
     def setUp(self):
         self.lighting_service = LightingService()
-        self.device_id = "device123",
+        self.device_id = "device123"
         self.model = "modelXYZ"
 
     @patch("app.services.lighting.requests.get")
@@ -33,26 +34,23 @@ class TestLightingServices(unittest.TestCase):
         self.assertIsNone(device)
 
     @patch("app.services.lighting.requests.post")
-    def test_turn_on(self, mock_post):
+    def test_send_request(self, mock_post):
         mock_post.return_value.status_code = 200
-        
-        self.lighting_service.turn_on(self.device_id, self.model)
+
+        request_data = RequestData(
+            request_id="uuid",
+            device_id=self.device_id,
+            sku=self.model,
+            capability=Capability(type=CapabilityType.ON_OFF, instance="powerSwitch", value=1)
+        )
+        self.lighting_service.send_request(request_data)
         mock_post.assert_called_once()
 
         args, kwargs = mock_post.call_args
-        self.assertEqual(kwargs["json"]["payload"]["device"], self.device_id)
-        self.assertEqual(kwargs["json"]["payload"]["sku"], self.model)
-        self.assertEqual(kwargs["json"]["payload"]["capability"]["value"], 1)
+        expected_payload = request_data.model_dump_json(indent=4)
+        self.assertEqual(kwargs["json"], expected_payload)
 
-    @patch("app.services.lighting.requests.post")
-    def test_turn_off(self, mock_post):
-        mock_post.return_value.status_code = 200
 
-        self.lighting_service.turn_off(self.device_id, self.model)
-        mock_post.assert_called_once()
-
-        args, kwargs = mock_post.call_args
-        self.assertEqual(kwargs["json"]["payload"]["capability"]["value"], 0)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from app.models.types import RequestData, Capability, CapabilityType
+from app.models.request_data import RequestData, Capability, CapabilityType
 import uuid
 import json
 
@@ -37,7 +37,8 @@ class LightingService:
         
     def send_request(self, request_data: RequestData):
         """Send POST request with structured data"""
-        response = requests.post(self.api_url_control, json=request_data, headers=self.headers)
+        json_output = request_data.model_dump_json(indent=4)
+        response = requests.post(self.api_url_control, json=json_output, headers=self.headers)
         print(f"Response : {response.status_code}")
 
     
