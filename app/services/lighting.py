@@ -1,7 +1,8 @@
 import requests
+from requests.exceptions import RequestException
 import os
 from dotenv import load_dotenv
-from app.models.request_data import RequestData, Capability, CapabilityType
+from app.models.request_data import RequestData, Capability, CapabilityType, Payload
 import uuid
 import json
 
@@ -37,8 +38,17 @@ class LightingService:
         
     def send_request(self, request_data: RequestData):
         """Send POST request with structured data"""
-        json_output = request_data.model_dump_json(indent=4)
-        response = requests.post(self.api_url_control, json=json_output, headers=self.headers)
-        print(f"Response : {response.status_code}")
-
-    
+        json_output = request_data.model_dump(mode="json")
+        print(json_output)
+        try:
+            response = requests.post(self.api_url_control, json=json_output, headers=self.headers)
+            if response.status_code == 200:
+                print(f"HTTP status code: {response.status_code}")
+                return response.json()
+            else:
+                print(f"HTTP status code : {response.status_code}")
+                response.raise_for_status()
+        except RequestException as e:
+            print(f"Request failed: {e}")
+            return {"error": f"Request failed: {str(e)}"}
+        

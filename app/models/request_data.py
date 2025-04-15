@@ -12,14 +12,16 @@ class Capability(BaseModel):
     instance: str
     value: int
 
+class Payload(BaseModel):
+    sku: str
+    device: str
+    capability: Capability
 
 
 class RequestData(BaseModel):
 
-    request_id: str
-    device_id: str
-    sku: str
-    capability: Capability
+    requestId: str
+    payload: Payload
 
 
 

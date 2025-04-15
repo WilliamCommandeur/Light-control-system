@@ -6,10 +6,10 @@ app = FastAPI(title="Light Control System")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_orgins="http://localhost:5173",
+    allow_origins="http://localhost:5173",
     allow_credentials=True,
     allow_methods=["GET","POST"],
-    allow_header=["Authorization", "Content-Typ"]
+    allow_headers=["Authorization", "Content-Typ"]
 
 )
 

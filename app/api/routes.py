@@ -7,7 +7,7 @@ router = APIRouter()
 
 lighting_service = LightingService()
 
-@router.post("/light-control/")
+@router.post("/light-control")
 async def light_control(request_data: RequestData):
     try:
         lighting_service.send_request(request_data)
