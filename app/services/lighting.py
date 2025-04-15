@@ -30,7 +30,7 @@ class LightingService:
                 return None
             
             print("Devices found")
-            return devices[0]
+            return devices
         
         else:
             print(f"Error : {response.status_code} : {response.text}")
