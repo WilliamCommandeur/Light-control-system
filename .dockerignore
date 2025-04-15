@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Venv local
+venv/
+.env/
+.env.*  # genre .env.dev, .env.prod
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# IDEs / éditeurs
+.vscode/
+.idea/
+
+# Logs
+*.log
