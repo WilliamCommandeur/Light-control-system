@@ -11,7 +11,7 @@ lighting_service = LightingService()
 @router.get("/devices")
 def get_devices():
     try:
-        devices = lighting_service.get_device()
+        devices = lighting_service.get_devices()
         if devices:
             return {"data": devices}
         return JSONResponse(status_code=404, content={"message": "Pas d'ampoules détectées"})
