@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 from enum import Enum
-import json
 
 class CapabilityType(Enum):
-
     ON_OFF = "devices.capabilities.on_off"
 
 
@@ -15,11 +13,10 @@ class Capability(BaseModel):
 class Payload(BaseModel):
     sku: str
     device: str
-    capability: Capability
+    capability: Capability | None = None
 
 
 class RequestData(BaseModel):
-
     requestId: str
     payload: Payload
 
